@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Test WebApi</title>
+    <style type="text/css" media="all">
+        body {
+            color: #333;
+        }
+
+        form {
+            width: 300px;
+            margin: 50px auto 10px;
+        }
+
+        label {
+            font-size: 0.8em;
+            opacity: 0.8;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            line-height: 25px;
+            padding: 10px;
+            width: 150px;
+            border: 1px solid grey;
+            border-radius: 3px;
+            transition: border 1s;
+            margin: 10px;
+            display: block;
+        }
+
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            border: 2px solid #2196f3;
+            outline: none;
+        }
+
+        ul {
+            margin: 10px;
+            width: auto;
+            height: 80vh;
+        }
+
+        li {
+            width: 100%;
+            height: 30px;
+            line-height: 30px;
+        }
+
+        li:nth-child(even) {
+            background: #ddd;
+        }
+
+        input[type="submit"] {
+            padding: 10px;
+            border: none;
+            border-radius: 3px;
+            background: #2196f3;
+            color: white;
+        }
+
+        input[type="submit"]:focus {
+            outline: none;
+            background: #0d47a1;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="./js/eruda.min.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8">
+        eruda.init(['console']);
+    </script>
+    <script src="./js/web_api.js" type="text/javascript" charset="utf-8"></script>
+    <form>
+        <h6>Enter Login Information</h6>
+        <label for="email">Email</label>
+        <input type="email" name="email" />
+        <label for="password">Password</label>
+        <input type="password" name="password" />
+        <input type="submit" name="submit" />
+    </form>
+    <ul>
+        <!--To populate-->
+    </ul>
+    <script type="text/javascript" charset="utf-8">
+        var form = document.getElementsByTagName('form')[0];
+        var h6 = document.getElementsByTagName('h6')[0];
+
+        function updateLogin(yes) {
+            if (yes) {
+                h6.innerText = "Enter Data to Store";
+                form.onsubmit = handleSubmit;
+                updateList();
+            } else {
+                h6.innerText = "Enter Login Details";
+                form.onsubmit = logIn;
+            }
+
+        }
+
+        function logIn(ev) {
+            ev.preventDefault();
+            var inputs = form.getElementsByTagName('input');
+            var email = inputs[0].value;
+            var password = inputs[1].value;
+            WebApi.login(email, password, function(err) {
+                updateLogin(!err);
+                if(err){
+                    h6.innerText = err;
+                }
+            });
+        }
+        
+        function handleSubmit(e) {
+            e.preventDefault();
+            var inputs = form.getElementsByTagName('input');
+            var data = {
+                email: inputs[0].value,
+                password: inputs[1].value
+            }
+            WebApi.addJsonData("emails", data, updateList);
+        }
+
+        function updateList() {
+            var ul = document.getElementsByTagName('ul')[0];
+            WebApi.listJsonData('emails', function(err, list) {
+                if (err) {
+                    console.log(err);
+                }
+                if (list) {
+                    ul.innerHTML = "";
+                    list.forEach(function(e) {
+                        var li = document.createElement("li");
+                        li.onclick = function(ev) {
+                            WebApi.deleteJsonData("emails", e.id, updateList);
+                        }
+                        li.appendChild(document.createTextNode("Email: " + e.data().email + " Password: " + e.data().password));
+                        ul.appendChild(li);
+                    });
+                }
+            });
+        }
+        WebApi.isLoggedIn(updateLogin);
+    </script>
+</body>
+</html>

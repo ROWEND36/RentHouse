@@ -40,7 +40,7 @@ function refreshView(data) {
     if(data.length<1){
         showEmpty();
     }
-    else data.forEach(function(e) {
+    else data.reverse().forEach(function(e) {
         var id = e.id;
         try {
             e = e.data();

@@ -1,14 +1,17 @@
 <?php
-require "../../../private/connection.php";
-require "../../../private/validate.php";
-function listAll()
+require_once "paths.php";
+require_once $PRIVATE . "connection.php";
+require_once $PRIVATE . "lib/user.php";
+function listAll($type=null)
 {
     validateLoggedIn("list");
-    validateRequest(["type"]);
-    $type = $_GET["type"];
+    if(!$type){
+        validateRequest(["type"],$_GET);
+        $type = $_GET["type"];
+    }
     validateString($type, "type");
 
-    $query = $conn->prepare("SELECT * from datatables where type=?");
+    $query = getDb()->prepare("SELECT * from datatables where type=?");
     $result = "";
     if ($query) {
         $query->bind_param("s", $type);
@@ -17,7 +20,7 @@ function listAll()
         }
     }
     if (!$result) {
-        throw new APIError("Select failed",APIError::$DATABASE_ERROR);
+        throw new APIError(getDb()->error, APIError::$DATABASE_ERROR);
     } elseif ($result->num_rows > 0) {
         $data = [];
         // output data of each row

@@ -1,6 +1,7 @@
 <?php
-require_once("../../../private/connection.php");
-require "../../../private/validate.php";
+require_once "paths.php";
+require_once($PRIVATE."connection.php");
+require_once $PRIVATE."validate.php";
 function submit()
 {
     validateRequest(["type","data"]);
@@ -8,7 +9,7 @@ function submit()
     validateString($type, "type");
 
     $data = $_POST["data"];
-
+    $conn = getDb();
     $query = $conn->prepare("INSERT into datatables (type,data) VALUES(?,?)");
     $result = false;
     if ($query) {
@@ -19,7 +20,7 @@ function submit()
         $result = $conn->commit();
     }
     if (!$result) {
-        throw new APIError("Insert failed",APIError::$DATABASE_ERROR);
+        throw new APIError(getDb()->error,APIError::$DATABASE_ERROR);
     } 
     return $id;
     

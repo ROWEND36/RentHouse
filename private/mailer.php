@@ -3,18 +3,20 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
 
-require $_SERVER["DOCUMENT_ROOT"] . "/mail/Exception.php";
-require $_SERVER["DOCUMENT_ROOT"] . "/mail/PHPMailer.php";
-require $_SERVER["DOCUMENT_ROOT"] . "/mail/SMTP.php";
-require "password.php";
-require "rate_limit.php";
-function sendMail($title, $body,$pass)
+require_once "paths.php";
+require $PRIVATE . "mail/Exception.php";
+require $PRIVATE . "mail/PHPMailer.php";
+require $PRIVATE . "mail/SMTP.php";
+require_once $PRIVATE . "rate_limit.php";
+function sendMail($title, $body, $pass)
 {
-    if($pass != $email_api_key){
+    global $PRIVATE,$TEMP;
+    include $PRIVATE . "password.php";
+    if ($pass != $email_api_key) {
         return "Outdated passkey";
     }
     //send only one email every 30mins
-    if(!rateLimit($_SERVER["DOCUMENT_ROOT"]."/mail/mail.counter",30*60)){
+    if (!rateLimit($TEMP . "mail.counter", $mail_frequency)) {
         return "Rate Limit Exceeded";
     }
     //Create a new PHPMailer instance
@@ -45,13 +47,13 @@ function sendMail($title, $body,$pass)
     $mail->SMTPAuth = true;
 
     //Username to use for SMTP authentication - use full email address for gmail
-    $mail->Username = $email;
+    $mail->Username = $sender_email;
 
     //Password to use for SMTP authentication
     $mail->Password = $email_password;
 
     //Set who the message is to be sent from
-    $mail->setFrom($email, "Automated Message");
+    $mail->setFrom($sender_email, $sender_name);
 
     //Set an alternative reply-to address
     //$mail->addReplyTo('replyto@example.com', 'First Last');
@@ -77,8 +79,9 @@ function sendMail($title, $body,$pass)
     if ($mail->send()) {
         //save_mail($mail);
         return null;
+    } else {
+        return $mail->ErrorInfo;
     }
-    else return $mail->ErrorInfo;
 }
 //Section 2: IMAP
 //IMAP commands requires the PHP IMAP Extension, found at: https://php.net/manual/en/imap.setup.php

@@ -4,14 +4,14 @@ POST
     oldpass: oldpass *unused*
     newpass: newpass
 */
-
-require "../../private/connection.php";
+require_once "paths.php";
+require $PRIVATE."connection.php";
 require "logged_in.php";
 if (isset($_SESSION["DATA"])) {
     header("Already Logged In", true, 403);
     die();
 }
-$result = $conn->prepare("UPDATE users SET password=? WHERE email=?");
+$result = getDb()->prepare("UPDATE users SET password=? WHERE email=?");
 $result = "";
 if ($query) {
     $newpass = password_hash($_POST["password"]);

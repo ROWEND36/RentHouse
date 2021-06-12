@@ -1,29 +1,32 @@
 <?php
-$HEADERS = [
-    403=>"API Error",
-    406=>"Invalid Credentials",
-    407=>"Unathorised Operation",
-    409=>"Bad Parameter",
-    410=>"Database Error"
-    ];
+
 class APIError extends Exception
 {
-    public static $BAD_PARAMETER = 409;
-    public static $INVALID_CREDENTIALS = 406;
-    public static $UNAUTHORISED = 407;
-    public static $DATABASE_ERROR = 410;
-    public static $API_ERROR = 403;
+    public static $API_ERROR = 422;
+    public static $BAD_PARAMETER = 400;
+    public static $DATABASE_ERROR = 503;
+    public static $INVALID_CREDENTIALS = 403;
+    public static $UNAUTHORISED = 401;
+    public static $SERVER_ERROR = 401;
     public function die()
     {
-        if($this->$code<400 || $this->$code>599){
-            $this->$code = 500;
+        $HEADERS = [
+            422 => "API Error",
+            400 => "Bad Request",
+            503 => "Database Error",
+            403 => "Invalid Credentials",
+            401 => "Unathorised Operation",
+        ];
+        $code = $this->getCode();
+        if ($code < 400 || $code > 599) {
+            $code = 500;
         }
         $header = "Internal Server Error";
-        if(array_key_exists($this->$code,$HEADERS)){
-            $header = $HEADERS[$this->$code];
+        if (array_key_exists($code, $HEADERS)) {
+            $header = $HEADERS[$code];
         }
-        header($header,$this->$code);
-        die($this->$message);
+        header($header,true, $code);
+        die($this->getMessage() or "Unknown Error");
     }
 }
 

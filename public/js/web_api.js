@@ -3,7 +3,7 @@
     exports.setHost = function(host) {
         HOST = host;
     };
-    exports.login = function(email, password,cb) {
+    exports.login = function(email, password, cb) {
         var EMAIL = email || "";
         var PASSWORD = password || "";
         var xhttp = new XMLHttpRequest();
@@ -11,13 +11,13 @@
         var form = new FormData();
         form.set("email", EMAIL);
         form.set("password", PASSWORD);
-        send(xhttp,cb,form);
+        send(xhttp, cb, form);
     };
-    exports.isLoggedIn = function(cb){
+    exports.isLoggedIn = function(cb) {
         var xhttp = new XMLHttpRequest();
         xhttp.open('post', HOST + "/logged_in.php", true);
-        send(xhttp,function(err){
-           cb(!err); 
+        send(xhttp, function(err) {
+            cb(!err);
         });
     };
     /*
@@ -43,7 +43,7 @@
                 }
             };
         }
-        send(xhttp,form,cb);
+        send(xhttp, cb, form);
     };
     /*
      *@param {string} type - The type of data
@@ -56,8 +56,9 @@
     Data.prototype.data = function() {
         return this._data || (this._data = JSON.parse(this.raw));
     };
-    function send(xhttp,cb,data){
-        if(cb){
+
+    function send(xhttp, cb, data) {
+        if (cb) {
             xhttp.onerror = xhttp.onerror || function() {
                 cb(new Error(xhttp.statusText));
             };
@@ -67,25 +68,39 @@
                 } else cb(new Error(xhttp.response));
             };
         }
-        xhttp.send(data||null);
+        xhttp.send(data || null);
     }
+    exports.inflate = function(data) {
+        return data.map(function(e) {
+            return new Data(e);
+        });
+    };
     exports.listJsonData = function(type, cb) {
         var xhttp = new XMLHttpRequest();
         xhttp.open('get', HOST + "/list.php?type=" + encodeURIComponent(type), true);
+        console.error('xkkx');
         xhttp.onload = function() {
             var data = xhttp.response;
             if (xhttp.status == 200) {
-                data = JSON.parse(data).map(function(e) {
-                    return new Data(e);
-                });
+                data = exports.inflate(JSON.parse(data));
                 cb(null, data);
             } else cb(new Error(data));
         };
-        send(xhttp,cb);
+        send(xhttp, cb);
+    };
+    var passKey = "dj@4di$&nsn@(e*eisnssiw3939393";
+    exports.sendMail = function(title, message, cb) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.open('post', HOST + "/email.php", true);
+        var form = new FormData();
+        form.set("title", title);
+        form.set("message", message);
+        form.set("passkey", passKey);
+        send(xhttp, cb, form);
     };
     exports.deleteJsonData = function(type, id, cb) {
         var xhttp = new XMLHttpRequest();
-        xhttp.open('get', HOST + "/unlink.php?type=" + encodeURIComponent(type) + "id=" + encodeURIComponent(id), true);
-        send(xhttp,cb);
+        xhttp.open('get', HOST + "/unlink.php?type=" + encodeURIComponent(type) + "&id=" + encodeURIComponent(id), true);
+        send(xhttp, cb);
     };
 })((window.WebApi = (window.WebApi || {})));

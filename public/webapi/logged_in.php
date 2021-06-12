@@ -1,6 +1,10 @@
 <?php
-if (!isset($_SESSION["DATA"])) {
-    header("Unauthorized", true, 405);
-    die("User is not logged in");
-}
+/*
+PUT
+    type: string
+*/
+require "paths.php";
+require $PRIVATE."lib/user.php";
+require "./api_response.php";
+apiCall("validateLoggedIn");
 ?>

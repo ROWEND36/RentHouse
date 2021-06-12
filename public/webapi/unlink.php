@@ -4,7 +4,8 @@ PUT
     title: string
     message: string
 */
-require "./lib/unlink.php";
+require "paths.php";
+require $PRIVATE."lib/unlink.php";
 require "./api_response.php";
-apiCall("unlink");
+apiCall("unlinkListItem");
 ?>

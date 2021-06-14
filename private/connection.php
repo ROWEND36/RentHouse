@@ -6,7 +6,7 @@ function getDb()
     static $conn = null;
     if($conn==null){
         require "paths.php";
-        require $PRIVATE . "password.php";
+        require $PASSWORD;
         $conn = new mysqli($servername, $db_username, $db_password, $dbname);
     }
     // Check connection

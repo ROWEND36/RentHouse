@@ -8,6 +8,7 @@ path = os.path
 suffix = "-baby.tar"
 extensions = ["css","js","php","html","jpg","jpeg","png"]
 allowed = [".htaccess"]
+exclude = ["password.php"]
 count = 1
 BASE_TIME = 0
 def is_newer(name):
@@ -24,6 +25,8 @@ def make_tar(folder,dest=None):
     all = os.listdir(".")
     has = False
     for name in all:
+        if name in exclude:
+            continue
         if name[0]==".":
             if name in allowed and is_newer(name):
                 has = True

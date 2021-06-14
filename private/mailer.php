@@ -11,7 +11,7 @@ require_once $PRIVATE . "rate_limit.php";
 function sendMail($title, $body, $pass)
 {
     global $PRIVATE,$TEMP;
-    include $PRIVATE . "password.php";
+    include $PASSWORD;
     if ($pass != $email_api_key) {
         return "Outdated passkey";
     }

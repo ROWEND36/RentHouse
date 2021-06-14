@@ -6,7 +6,7 @@ function signup()
 {
     global $PRIVATE;
     validateRequest(["email","password","secret_key"]);
-    include $PRIVATE . "password.php";
+    include $PASSWORD;
     $user_email = strtolower($_POST["email"]);
     validateEmail($user_email, "email");
     

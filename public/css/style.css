@@ -16,7 +16,7 @@ body{
 
 }
 
-.nav-link{
+/* .nav-link{
     font-size:16px;
     margin:15px;
     color:white !important;
@@ -35,7 +35,7 @@ body{
 .active .nav-link{
     color:#f7f7f7 !important;
 }
-
+ */
     
 .site-content{
     background-image:url(../img/bkimg.jpg);
@@ -98,15 +98,14 @@ body{
     margin-bottom:8%;
 }
 
-.card{
-    width:20rem;
-}
 .card-text{
     text-align: justify;
 }
 
  /*Section-2*/
-
+.darken{
+    background: rgba(0,0,0,.3);
+}
 .section-2 .container-fluid{
     background-image:url(../img/midbk3.jpg);
     background-size:cover;
@@ -251,9 +250,9 @@ body{
 }
 
 @media screen and (max-width:768px){
-    .section-1 .card{
+    /* .section-1 .card{
         width:14rem;
-    }
+    } */
     .section-4 .col-md-7 img{
         width:350px;
     } 
@@ -262,7 +261,7 @@ body{
 @media screen and (max-width : 320px){
     .site-content .site-title{
         font-size: 30px;
-        padding left: 15%;
+        padding-left: 15%;
     }
     .site-content .site-btn2{
         display: none;

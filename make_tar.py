@@ -6,7 +6,8 @@ import os
 path = os.path
 #Helps you find the files, for some reason, baby just stands out
 suffix = "-baby.tar"
-extensions = ["css","js","php","html"]
+extensions = ["css","js","php","html","jpg","jpeg","png"]
+allowed = [".htaccess"]
 count = 1
 BASE_TIME = 0
 def is_newer(name):
@@ -23,8 +24,11 @@ def make_tar(folder,dest=None):
     all = os.listdir(".")
     has = False
     for name in all:
-        if name[0]==".": continue
-        if path.isdir(name):
+        if name[0]==".":
+            if name in allowed and is_newer(name):
+                has = True
+                tar.add(name)
+        elif path.isdir(name):
             try:
                 if make_tar(folder+"/"+name):
                     has = True

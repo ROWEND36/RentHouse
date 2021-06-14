@@ -1,5 +1,5 @@
 (function(exports) {
-    var HOST = 'http://localhost:8080/webapi';
+    var HOST = '/webapi';
     exports.setHost = function(host) {
         HOST = host;
     };
